@@ -72,7 +72,7 @@
             align-items: center;
             padding: 0.5rem 0.75rem;
             margin: 0.125rem 0.75rem;
-            color: #1e3a5f; /* Darker blue for contrast on light blue bg */
+            color: #4b5563;
             border-radius: 0.5rem;
             transition: all 0.2s ease;
             text-decoration: none;
@@ -80,7 +80,7 @@
             font-weight: 600;
         }
         .sidebar-item:hover {
-            background-color: rgba(255, 255, 255, 0.4);
+            background-color: var(--color-secondary);
             color: var(--color-primary);
         }
         .sidebar-item.active {
@@ -122,11 +122,11 @@
 
         <!-- Sidebar -->
         <aside :class="{ 'translate-x-0 w-72': sidebarOpen || mobileSidebarOpen, '-translate-x-full lg:translate-x-0 lg:w-0': !sidebarOpen && !mobileSidebarOpen }"
-               class="bg-secondary border-r border-blue-100 overflow-hidden fixed h-full z-50 transition-all duration-300 lg:z-30 shadow-sm">
+               class="bg-white border-r border-gray-200 overflow-hidden fixed h-full z-50 transition-all duration-300 lg:z-30 shadow-sm">
             
             <div class="w-72 flex flex-col h-full">
                 <!-- Logo area -->
-                <div class="h-16 flex items-center px-6 border-b border-blue-200/30 flex-shrink-0">
+                <div class="h-16 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
                     <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 overflow-hidden">
                         @if(($brandingType === 'logo' || $brandingType === 'both') && $logoPath && Storage::disk('public')->exists($logoPath))
                             <img src="{{ Storage::disk('public')->url($logoPath) }}" alt="{{ $siteName }}" class="h-8 max-w-full">
@@ -137,7 +137,7 @@
                         @endif
                         
                         @if($brandingType === 'name' || $brandingType === 'both')
-                            <span class="font-bold text-lg text-blue-900 truncate tracking-tight">{{ $siteName }}</span>
+                            <span class="font-bold text-lg text-gray-900 truncate tracking-tight">{{ $siteName }}</span>
                         @endif
                     </a>
                 </div>
@@ -145,7 +145,7 @@
                 <!-- Navigation -->
                 <nav class="flex-1 overflow-y-auto py-4">
                     <div class="px-6 mb-2">
-                        <p class="text-[10px] font-bold text-blue-700/50 uppercase tracking-widest leading-loose">Обучение</p>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-loose">Обучение</p>
                     </div>
                     
                     <a href="{{ route('catalog.index') }}" class="sidebar-item {{ request()->routeIs('catalog.*') ? 'active' : '' }}">
@@ -155,8 +155,8 @@
                         <span>Каталог</span>
                     </a>
                     
-                    <div class="px-6 mt-6 mb-2 border-t border-blue-200/30 pt-6">
-                        <p class="text-[10px] font-bold text-blue-700/50 uppercase tracking-widest leading-loose">Настройки</p>
+                    <div class="px-6 mt-6 mb-2 border-t border-gray-50 pt-6">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-loose">Настройки</p>
                     </div>
 
                     <a href="{{ route('profile.edit') }}" class="sidebar-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
@@ -168,18 +168,18 @@
                 </nav>
                 
                 <!-- Bottom User section -->
-                <div class="p-4 border-t border-blue-200/30 flex-shrink-0 bg-white/10">
+                <div class="p-4 border-t border-gray-100 flex-shrink-0 bg-gray-50">
                     <div class="flex items-center group">
-                        <div class="w-9 h-9 rounded-full bg-white/50 border border-blue-100 flex items-center justify-center text-xs font-bold text-blue-700 transition group-hover:bg-brand group-hover:text-white">
+                        <div class="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs font-bold text-gray-700 transition group-hover:bg-brand group-hover:text-white">
                             {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
                         </div>
                         <div class="ml-3 flex-1 min-w-0">
-                            <p class="text-sm font-bold text-blue-950 truncate">{{ auth()->user()->name ?? 'Пользователь' }}</p>
-                            <p class="text-[11px] text-blue-700/70 truncate">{{ auth()->user()->email ?? auth()->user()->phone }}</p>
+                            <p class="text-sm font-bold text-gray-900 truncate">{{ auth()->user()->name ?? 'Пользователь' }}</p>
+                            <p class="text-[11px] text-gray-400 truncate">{{ auth()->user()->email ?? auth()->user()->phone }}</p>
                         </div>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="text-blue-400 hover:text-red-500 transition p-1.5" title="Выйти">
+                            <button type="submit" class="text-gray-400 hover:text-red-500 transition p-1.5" title="Выйти">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
