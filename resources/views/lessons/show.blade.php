@@ -182,6 +182,31 @@
             </div>
             @endif
 
+            <!-- MANUAL COMPLETION BUTTON (If no assignment or as a quick action) -->
+            @if(!$assignment && !($progress->is_completed ?? false))
+            <div class="mb-12">
+                <button id="mark-complete-btn" 
+                        class="w-full flex items-center justify-center space-x-3 bg-brand/10 text-brand border-2 border-dashed border-brand/30 rounded-3xl py-8 px-6 hover:bg-brand/20 transition-all group">
+                    <div class="w-12 h-12 rounded-2xl bg-brand text-white flex items-center justify-center shadow-lg shadow-brand/20 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <p class="font-bold text-lg leading-none mb-1">Я изучил этот урок</p>
+                        <p class="text-sm font-medium opacity-70">Отметить как пройденный</p>
+                    </div>
+                </button>
+            </div>
+            @elseif(!$assignment && ($progress->is_completed ?? false))
+            <div class="mb-12 bg-green-50 border border-green-100 rounded-3xl p-8 flex items-center justify-center space-x-4">
+                <div class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <p class="font-bold text-green-800 text-lg">Вы успешно изучили этот урок!</p>
+            </div>
+            @endif
+
             <!-- Navigation Buttons -->
             <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 border-t border-gray-100 pt-10 mb-10">
                 @if($previousLesson)
@@ -273,6 +298,58 @@ document.getElementById('assignment-form')?.addEventListener('submit', function(
         btn.disabled = false;
     });
 });
+
+// MANUAL COMPLETION
+document.getElementById('mark-complete-btn')?.addEventListener('click', function() {
+    const btn = this;
+    const originalContent = btn.innerHTML;
+    btn.disabled = true;
+    btn.classList.add('opacity-50');
+
+    fetch('{{ route("lessons.complete", [$course, $lesson]) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.dispatchEvent(new CustomEvent('notify', { 
+                detail: { message: 'Урок пройден!', type: 'success' } 
+            }));
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+    });
+});
+
+// VIDEO POSITION TRACKING
+let videoStarted = false;
+let lastSavedPosition = 0;
+
+window.addEventListener('message', function(event) {
+    // Basic support for YouTube and other players that post messages
+    // This is a placeholder for more advanced tracking
+    if (!videoStarted) {
+        videoStarted = true;
+        console.log('Video interaction detected');
+    }
+});
+
+// Periodically check if we need to mark progress (fallback or simple timer)
+@if($lesson->hasVideo() && !($progress->is_completed ?? false))
+    // If it's a long lesson without assignment, we could auto-complete after some time
+    // For now, let's just use manual completion or assignment success
+@endif
 </script>
 @endpush
 

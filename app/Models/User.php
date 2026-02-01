@@ -113,7 +113,7 @@ class User extends Authenticatable implements FilamentUser
         }
 
         $completedLessons = $this->lessonProgress()
-            ->whereHas('lesson', fn ($q) => $q->whereHas('module', fn ($q2) => $q2->where('course_id', $course->id)))
+            ->whereHas('lesson', fn ($q) => $q->whereHas('modules', fn ($q2) => $q2->where('course_id', $course->id)))
             ->where('is_completed', true)
             ->count();
 

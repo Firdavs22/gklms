@@ -23,9 +23,7 @@ class DashboardController extends Controller
         
         $totalLessons = 0;
         foreach ($enrollments as $enrollment) {
-            foreach ($enrollment->course->publishedModules as $module) {
-                $totalLessons += $module->publishedLessons()->count();
-            }
+            $totalLessons += $enrollment->course->lessons()->where('lessons.is_published', true)->count();
         }
 
         return view('dashboard', [

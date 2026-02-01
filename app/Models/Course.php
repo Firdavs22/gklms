@@ -66,6 +66,16 @@ class Course extends Model
     }
 
     /**
+     * Get all lessons for this course (through modules)
+     */
+    public function lessons()
+    {
+        return Lesson::whereHas('modules', function ($query) {
+            $query->where('course_id', $this->id);
+        });
+    }
+
+    /**
      * Get all enrollments for this course
      */
     public function enrollments(): HasMany

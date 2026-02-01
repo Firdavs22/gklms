@@ -79,6 +79,14 @@ class AssignmentController extends Controller
             'submitted_at' => now(),
         ]);
 
+        // AUTOMATICALLY MARK LESSON AS COMPLETED
+        if ($isPassed) {
+            \App\Models\LessonProgress::updateOrCreate(
+                ['user_id' => $user->id, 'lesson_id' => $lesson->id],
+                ['is_completed' => true, 'completed_at' => now()]
+            );
+        }
+
         return response()->json([
             'success' => true,
             'submission_id' => $submission->id,
