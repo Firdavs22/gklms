@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class EnrollmentController extends Controller
 {
@@ -34,6 +35,9 @@ class EnrollmentController extends Controller
         Enrollment::create([
             'user_id' => $user->id,
             'course_id' => $course->id,
+            'payment_id' => 'FREE_' . Str::random(12),
+            'amount_paid' => 0,
+            'payment_provider' => 'free',
             'enrolled_at' => now(),
         ]);
 
