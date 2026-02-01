@@ -18,9 +18,19 @@ class DashboardController extends Controller
             ->latest('enrolled_at')
             ->get();
 
+        // Calculate statistics
+        $completedLessons = $user->lessonProgress()->where('is_completed', true)->count();
+        
+        $totalLessons = 0;
+        foreach ($enrollments as $enrollment) {
+            $totalLessons += $enrollment->course->publishedLessons()->count();
+        }
+
         return view('dashboard', [
             'user' => $user,
             'enrollments' => $enrollments,
+            'completedLessons' => $completedLessons,
+            'totalLessons' => $totalLessons,
         ]);
     }
 }

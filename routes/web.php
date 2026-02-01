@@ -15,8 +15,16 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Public catalog (no auth required)
-Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
+// Main page - redirect to dashboard or login
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
+})->name('home');
+
+// Public catalog (if needed)
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/course/{course:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // Guest routes (login/register)
