@@ -16,10 +16,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Telegram Web App routes
-Route::get('/webapp', [\App\Http\Controllers\TelegramWebAppController::class, 'index'])
-    ->name('webapp.index');
-Route::get('/webapp/auth-redirect', [\App\Http\Controllers\TelegramWebAppController::class, 'authRedirect'])
-    ->name('webapp.auth-redirect');
+Route::middleware(['allow.iframe'])->group(function () {
+    Route::get('/webapp', [\App\Http\Controllers\TelegramWebAppController::class, 'index'])
+        ->name('webapp.index');
+    Route::get('/webapp/auth-redirect', [\App\Http\Controllers\TelegramWebAppController::class, 'authRedirect'])
+        ->name('webapp.auth-redirect');
+});
+
 Route::get('/webapp/setup-menu', [\App\Http\Controllers\TelegramWebAppController::class, 'setupMenuButton'])
     ->name('webapp.setup-menu');
 
@@ -73,7 +76,7 @@ Route::get('/webhook/tilda/test', [\App\Http\Controllers\TildaWebhookController:
 Route::post('/logout', [MagicLinkController::class, 'logout'])->name('logout');
 
 // Authenticated routes (user dashboard and courses)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'allow.iframe'])->group(function () {
     // Dashboard - show enrolled courses
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
