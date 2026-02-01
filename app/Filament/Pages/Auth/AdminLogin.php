@@ -8,7 +8,7 @@ use Filament\Pages\Auth\Login as BaseLogin;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
@@ -21,31 +21,16 @@ class AdminLogin extends BaseLogin
         '402582319', // Firdavs
     ];
 
-    public ?string $telegram_code = null;
-
-    public function mount(): void
-    {
-        parent::mount();
-        
-        // Reset step on fresh page load (but not on Livewire updates)
-        if (!request()->isMethod('post')) {
-            Session::forget('admin_login_step');
-        }
-    }
-
-    protected function getStep(): int
-    {
-        return Session::get('admin_login_step', 1);
-    }
-
-    protected function setStep(int $step): void
-    {
-        Session::put('admin_login_step', $step);
-    }
+    /**
+     * Step: 1 = login/password, 2 = telegram code
+     */
+    public int $step = 1;
+    
+    public ?string $pendingUserId = null;
 
     public function form(Form $form): Form
     {
-        if ($this->getStep() === 2) {
+        if ($this->step === 2) {
             return $form
                 ->schema([
                     TextInput::make('telegram_code')
@@ -53,8 +38,7 @@ class AdminLogin extends BaseLogin
                         ->placeholder('Введите 6-значный код')
                         ->required()
                         ->numeric()
-                        ->minLength(6)
-                        ->maxLength(6)
+                        ->length(6)
                         ->autofocus(),
                 ])
                 ->statePath('data');
@@ -92,7 +76,8 @@ class AdminLogin extends BaseLogin
         $data = $this->form->getState();
 
         // Step 1: Verify login and password
-        if ($this->getStep() === 1) {
+        if ($this->step === 1) {
+            // Custom credentials check (not email, just username)
             $validUsername = env('ADMIN_LOGIN', '22GKlms');
             $validPassword = env('ADMIN_PASSWORD', 'AVjUvnjk34');
             
@@ -114,30 +99,28 @@ class AdminLogin extends BaseLogin
             // Store code in cache for 5 minutes
             Cache::put('admin_2fa_code', $code, now()->addMinutes(5));
             
-            // Send code to Telegram
+            // Send code to all allowed admin Telegram IDs
             $this->sendTelegramCode($code);
             
-            // Move to step 2
-            $this->setStep(2);
+            $this->step = 2;
             
-            // Redirect to refresh the page with new form
+            $this->dispatch('$refresh');
+            
             return null;
         }
 
         // Step 2: Verify Telegram code
-        if ($this->getStep() === 2) {
+        if ($this->step === 2) {
             $storedCode = Cache::get('admin_2fa_code');
-            $inputCode = $data['telegram_code'] ?? '';
             
-            if (!$storedCode || $inputCode !== $storedCode) {
+            if (!$storedCode || $data['telegram_code'] !== $storedCode) {
                 throw ValidationException::withMessages([
                     'data.telegram_code' => 'Неверный код',
                 ]);
             }
 
-            // Clear the code and step
+            // Clear the code
             Cache::forget('admin_2fa_code');
-            Session::forget('admin_login_step');
 
             // Find or create admin user
             $user = \App\Models\User::where('telegram_id', $this->allowedAdminTelegramIds[0])->first();
@@ -184,11 +167,11 @@ class AdminLogin extends BaseLogin
 
     public function getHeading(): string
     {
-        return $this->getStep() === 1 ? 'Вход в админку' : 'Подтверждение';
+        return $this->step === 1 ? 'Вход в админку' : 'Подтверждение';
     }
 
     public function getSubheading(): ?string
     {
-        return $this->getStep() === 2 ? 'Введите код из Telegram' : null;
+        return $this->step === 2 ? 'Введите код из Telegram' : null;
     }
 }

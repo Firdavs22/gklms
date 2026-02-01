@@ -47,6 +47,13 @@ class TelegramWebAppController extends Controller
      */
     public function index(Request $request)
     {
+        Log::info('WebApp: index hit', [
+            'auth' => auth()->check(),
+            'user' => auth()->user()?->id,
+            'ip' => $request->ip(),
+            'ua' => $request->userAgent()
+        ]);
+
         // If user is authenticated, redirect to dashboard
         if (auth()->check()) {
             return redirect()->route('dashboard');
@@ -147,6 +154,12 @@ class TelegramWebAppController extends Controller
         
         // Calculate hash
         $calculatedHash = hash_hmac('sha256', $dataCheckString, $secretKey);
+
+        Log::debug('WebApp: Hash verification', [
+            'check_string' => $dataCheckString,
+            'calculated' => $calculatedHash,
+            'provided' => $hash
+        ]);
 
         // Verify hash
         if (!hash_equals($calculatedHash, $hash)) {
