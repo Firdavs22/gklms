@@ -7,6 +7,7 @@
     @php
         $siteName = \App\Models\SiteSetting::get('site_name', 'GloboKids Edu');
         $logoPath = \App\Models\SiteSetting::get('logo_path');
+        $brandingType = \App\Models\SiteSetting::get('branding_display_type', 'name');
         $primaryColor = \App\Models\SiteSetting::get('primary_color', '#4A91CD');
         $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#D0E3F4');
         $peachColor = '#F1C49E';
@@ -68,14 +69,17 @@
             <!-- Logo -->
             <div class="p-6 border-b border-gray-100">
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-                    @if($logoPath && Storage::disk('public')->exists($logoPath))
+                    @if(($brandingType === 'logo' || $brandingType === 'both') && $logoPath && Storage::disk('public')->exists($logoPath))
                         <img src="{{ Storage::disk('public')->url($logoPath) }}" alt="{{ $siteName }}" class="h-10">
-                    @else
+                    @elseif($brandingType !== 'logo')
                         <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-bold text-lg">
                             {{ substr($siteName, 0, 1) }}
                         </div>
                     @endif
-                    <span class="font-bold text-lg text-gray-900">{{ $siteName }}</span>
+                    
+                    @if($brandingType === 'name' || $brandingType === 'both')
+                        <span class="font-bold text-lg text-gray-900">{{ $siteName }}</span>
+                    @endif
                 </a>
             </div>
             
@@ -129,14 +133,17 @@
         <div class="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
             <div class="flex items-center justify-center px-4 h-16">
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
-                    @if($logoPath && Storage::disk('public')->exists($logoPath))
+                    @if(($brandingType === 'logo' || $brandingType === 'both') && $logoPath && Storage::disk('public')->exists($logoPath))
                         <img src="{{ Storage::disk('public')->url($logoPath) }}" alt="{{ $siteName }}" class="h-8">
-                    @else
+                    @elseif($brandingType !== 'logo')
                         <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white font-bold">
                             {{ substr($siteName, 0, 1) }}
                         </div>
                     @endif
-                    <span class="font-bold text-gray-900">{{ $siteName }}</span>
+
+                    @if($brandingType === 'name' || $brandingType === 'both')
+                        <span class="font-bold text-gray-900">{{ $siteName }}</span>
+                    @endif
                 </a>
             </div>
         </div>

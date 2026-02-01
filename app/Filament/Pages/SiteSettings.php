@@ -33,8 +33,9 @@ class SiteSettings extends Page implements HasForms
         $this->form->fill([
             'site_name' => SiteSetting::get('site_name', 'GloboKids Edu'),
             'logo_path' => SiteSetting::get('logo_path'),
-            'primary_color' => SiteSetting::get('primary_color', '#7c3aed'),
-            'secondary_color' => SiteSetting::get('secondary_color', '#a855f7'),
+            'branding_display_type' => SiteSetting::get('branding_display_type', 'name'),
+            'primary_color' => SiteSetting::get('primary_color', '#4A91CD'),
+            'secondary_color' => SiteSetting::get('secondary_color', '#D0E3F4'),
         ]);
     }
 
@@ -45,6 +46,16 @@ class SiteSettings extends Page implements HasForms
                 Forms\Components\Section::make('Брендинг')
                     ->description('Настройте внешний вид сайта для пользователей')
                     ->schema([
+                        Forms\Components\Radio::make('branding_display_type')
+                            ->label('Что отображать в шапке?')
+                            ->options([
+                                'name' => 'Только название (текст)',
+                                'logo' => 'Только логотип (картинка)',
+                                'both' => 'И то, и другое',
+                            ])
+                            ->required()
+                            ->inline(),
+
                         Forms\Components\TextInput::make('site_name')
                             ->label('Название сайта')
                             ->required()
@@ -57,10 +68,10 @@ class SiteSettings extends Page implements HasForms
                             ->directory('branding')
                             ->visibility('public')
                             ->maxSize(1024)
-                            ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg'])
+                            ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
                             ->helperText('PNG, SVG или JPG. Рекомендуемая высота: 40-60px'),
                     ])
-                    ->columns(2),
+                    ->columns(1),
 
                 Forms\Components\Section::make('Цветовая схема')
                     ->description('Эти цвета будут использоваться на страницах для пользователей')
@@ -88,6 +99,7 @@ class SiteSettings extends Page implements HasForms
             $logoPath = $logoPath[0] ?? null;
         }
 
+        SiteSetting::set('branding_display_type', $data['branding_display_type']);
         SiteSetting::set('site_name', $data['site_name']);
         SiteSetting::set('logo_path', $logoPath);
         SiteSetting::set('primary_color', $data['primary_color']);
