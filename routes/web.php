@@ -89,4 +89,14 @@ Route::middleware('auth')->group(function () {
     // Admin preview (without enrollment check)
     Route::get('/preview/lesson/{lesson}', [LessonController::class, 'preview'])
         ->name('lessons.preview');
+
+    // Profile settings
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])
+        ->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])
+        ->name('profile.password');
+    Route::delete('/profile/telegram', [\App\Http\Controllers\ProfileController::class, 'disconnectTelegram'])
+        ->name('profile.telegram.disconnect');
 });
