@@ -15,6 +15,16 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+// Telegram Web App routes
+Route::get('/webapp', [\App\Http\Controllers\TelegramWebAppController::class, 'index'])
+    ->middleware('telegram.webapp')
+    ->name('webapp.index');
+Route::post('/webapp/auth', [\App\Http\Controllers\TelegramWebAppController::class, 'authenticate'])
+    ->middleware('telegram.webapp')
+    ->name('webapp.auth');
+Route::get('/webapp/setup-menu', [\App\Http\Controllers\TelegramWebAppController::class, 'setupMenuButton'])
+    ->name('webapp.setup-menu');
+
 // Main page - redirect to dashboard or login
 Route::get('/', function () {
     if (auth()->check()) {
