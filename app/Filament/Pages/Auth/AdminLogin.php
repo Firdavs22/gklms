@@ -126,7 +126,10 @@ class AdminLogin extends BaseLogin
                     'email' => 'admin@globokidsedu.ru',
                     'telegram_id' => $this->allowedAdminTelegramIds[0],
                     'password' => bcrypt('random_' . uniqid()),
+                    'is_admin' => true,
                 ]);
+            } elseif (!$user->is_admin) {
+                $user->update(['is_admin' => true]);
             }
 
             // Login the user
