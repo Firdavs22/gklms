@@ -69,6 +69,16 @@ class TelegramBotController extends Controller
         $parts = explode(' ', $text);
         
         if (count($parts) < 2) {
+            // Check if user already exists by telegram_id
+            $existingUser = User::where('telegram_id', $chatId)->first();
+            if ($existingUser) {
+                $this->bot->sendSuccessMessage($chatId,
+                    "👋 Привет, <b>{$existingUser->name}</b>!\n\n" .
+                    "Вы уже зарегистрированы. Для входа перейдите на сайт и введите свой номер телефона."
+                );
+                return;
+            }
+            
             $this->bot->sendMessage($chatId,
                 "👋 Привет! Для авторизации перейдите на сайт и введите свой номер телефона."
             );
@@ -87,7 +97,25 @@ class TelegramBotController extends Controller
             return;
         }
 
-        // Save chat_id with token for later verification
+        // Check if user already exists by this phone
+        $existingUser = User::where('phone', $this->normalizePhone($phoneData['phone']))->first();
+        if ($existingUser && $existingUser->telegram_id) {
+            // User exists, auto-login
+            Cache::put("tg_auth:{$authToken}", [
+                'phone' => $phoneData['phone'],
+                'user_id' => $existingUser->id,
+                'status' => 'success',
+            ], now()->addMinutes(5));
+            
+            $this->bot->sendSuccessMessage($chatId,
+                "✅ Добро пожаловать, <b>{$existingUser->name}</b>!\n\n" .
+                "Вернитесь на сайт — вы уже авторизованы."
+            );
+            return;
+        }
+
+        // Store chat_id with authToken for later lookup (more reliable)
+        Cache::put("tg_chat_token:{$chatId}", $authToken, now()->addMinutes(5));
         Cache::put("tg_chat:{$authToken}", $chatId, now()->addMinutes(5));
 
         // Request phone number
@@ -178,11 +206,14 @@ class TelegramBotController extends Controller
      */
     protected function findTokenByChatId(int $chatId): ?string
     {
-        // This is a simplified approach - in production, use Redis SCAN
-        // or store chat_id -> token mapping separately
+        // Direct lookup - we store chat_id -> token mapping
+        $token = Cache::get("tg_chat_token:{$chatId}");
         
-        // Check recent tokens (scan cache keys)
-        // For now, we'll use a simple approach with stored mapping
+        if ($token) {
+            return $token;
+        }
+        
+        // Fallback: scan known tokens
         $keys = Cache::get('tg_auth_keys', []);
         
         foreach ($keys as $token) {
