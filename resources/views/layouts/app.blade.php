@@ -30,16 +30,28 @@
             background-color: {{ $primaryColor }};
         }
         .sidebar-link {
-            @apply flex items-center px-4 py-3 text-gray-600 rounded-xl transition-all duration-200;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #4B5563;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            text-decoration: none;
         }
         .sidebar-link:hover {
-            @apply bg-purple-50 text-purple-600;
+            background-color: #F3E8FF;
+            color: #7C3AED;
         }
         .sidebar-link.active {
-            @apply bg-purple-100 text-purple-700 font-medium;
+            background-color: #EDE9FE;
+            color: #6D28D9;
+            font-weight: 500;
         }
         .sidebar-link svg {
-            @apply w-5 h-5 mr-3;
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
         }
     </style>
 </head>
