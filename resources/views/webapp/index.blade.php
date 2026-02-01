@@ -3,94 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>GloboKids LMS</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .loading-spinner {
-            border: 3px solid rgba(124, 58, 237, 0.2);
-            border-top-color: #7c3aed;
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 320px;
+            width: 90%;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top-color: #764ba2;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
             animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        h2 { color: #333; margin-bottom: 10px; font-size: 20px; }
+        p { color: #666; font-size: 14px; }
+        .error { color: #e74c3c; }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .debug { 
+            margin-top: 20px; 
+            font-size: 11px; 
+            color: #999; 
+            word-break: break-all;
+            max-height: 100px;
+            overflow: auto;
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
-    <div id="loading" class="text-center">
-        <div class="loading-spinner mx-auto mb-4"></div>
-        <p class="text-gray-600">Загрузка...</p>
+<body>
+    <div class="card" id="content">
+        <div class="spinner"></div>
+        <h2>Загрузка...</h2>
+        <p>Подключение к GloboKids LMS</p>
     </div>
 
     <script>
-        // Initialize Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        const content = document.getElementById('content');
+        
+        try {
+            // Initialize Telegram Web App
+            const tg = window.Telegram?.WebApp;
+            
+            if (!tg) {
+                throw new Error('Telegram WebApp не доступен');
+            }
+            
+            tg.ready();
+            tg.expand();
 
-        // Set theme
-        document.body.style.backgroundColor = tg.themeParams.bg_color || '#ffffff';
-        document.body.style.color = tg.themeParams.text_color || '#000000';
-
-        // Get init data and authenticate
-        const initData = tg.initData;
-
-        if (initData) {
-            // Send to server for authentication
-            fetch('/webapp/auth', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'X-Telegram-Init-Data': initData,
-                },
-                body: JSON.stringify({ initData: initData })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.authenticated && data.redirect) {
-                    // Redirect to dashboard
-                    window.location.href = data.redirect;
-                } else {
-                    // Show error
-                    document.getElementById('loading').innerHTML = `
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </div>
-                            <p class="text-gray-600">Ошибка авторизации</p>
-                            <button onclick="tg.close()" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg">
-                                Закрыть
-                            </button>
-                        </div>
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error('Auth error:', error);
-                document.getElementById('loading').innerHTML = `
-                    <div class="text-center">
-                        <p class="text-red-500">Ошибка: ${error.message}</p>
-                        <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg">
-                            Повторить
-                        </button>
-                    </div>
+            // Get init data
+            const initData = tg.initData;
+            const initDataUnsafe = tg.initDataUnsafe;
+            
+            if (!initData) {
+                // No initData - show message
+                content.innerHTML = `
+                    <h2>👋 Добро пожаловать!</h2>
+                    <p>Откройте эту страницу из Telegram бота GlobokidsAuth</p>
+                    <a href="https://t.me/GlobokidsAuthBot" class="btn">Открыть бота</a>
                 `;
-            });
-        } else {
-            // No initData - redirect to regular login
-            window.location.href = '/login';
+            } else {
+                // Has initData - redirect to auth endpoint
+                const authUrl = '/webapp/auth-redirect?initData=' + encodeURIComponent(initData);
+                window.location.href = authUrl;
+            }
+            
+        } catch (error) {
+            content.innerHTML = `
+                <h2 class="error">Ошибка</h2>
+                <p>${error.message}</p>
+                <button class="btn" onclick="location.reload()">Повторить</button>
+                <div class="debug">Debug: ${error.stack || 'no stack'}</div>
+            `;
         }
     </script>
 </body>
