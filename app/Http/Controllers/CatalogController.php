@@ -13,7 +13,7 @@ class CatalogController extends Controller
     public function index()
     {
         $courses = Course::published()
-            ->withCount(['modules', 'lessons', 'enrollments'])
+            ->withCount(['modules', 'enrollments'])
             ->orderBy('created_at', 'desc')
             ->get();
 

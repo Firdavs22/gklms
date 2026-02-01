@@ -90,7 +90,7 @@
                         <div class="flex items-center space-x-2 mb-3">
                             <span class="bg-purple-100 text-brand text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Курс</span>
                             <span class="text-gray-400 text-xs">•</span>
-                            <span class="text-gray-500 text-xs">{{ $course->lessons_count }} уроков</span>
+                            <span class="text-gray-500 text-xs">{{ $course->modules_count }} модулей</span>
                         </div>
                         
                         <h3 class="font-bold text-xl text-gray-900 mb-2 group-hover:text-brand transition-colors">{{ $course->title }}</h3>

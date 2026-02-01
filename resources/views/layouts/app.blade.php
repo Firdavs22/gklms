@@ -7,8 +7,10 @@
     @php
         $siteName = \App\Models\SiteSetting::get('site_name', 'GloboKids Edu');
         $logoPath = \App\Models\SiteSetting::get('logo_path');
-        $primaryColor = \App\Models\SiteSetting::get('primary_color', '#7c3aed');
-        $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#a855f7');
+        $primaryColor = \App\Models\SiteSetting::get('primary_color', '#4A91CD');
+        $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#D0E3F4');
+        $peachColor = '#F1C49E';
+        $greenColor = '#83C696';
     @endphp
     <title>@yield('title', 'Личный кабинет') - {{ $siteName }}</title>
     
@@ -19,15 +21,19 @@
         :root {
             --color-primary: {{ $primaryColor }};
             --color-secondary: {{ $secondaryColor }};
+            --color-brand: #4A91CD;
+            --color-brand-light: #D0E3F4;
+            --color-peach: #F1C49E;
+            --color-green: #83C696;
         }
         .gradient-bg {
-            background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%);
+            background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-green) 100%);
         }
         .text-brand {
-            color: {{ $primaryColor }};
+            color: var(--color-brand);
         }
         .bg-brand {
-            background-color: {{ $primaryColor }};
+            background-color: var(--color-brand);
         }
         .sidebar-link {
             display: flex;
@@ -39,13 +45,13 @@
             text-decoration: none;
         }
         .sidebar-link:hover {
-            background-color: #F3E8FF;
-            color: #7C3AED;
+            background-color: var(--color-brand-light);
+            color: var(--color-brand);
         }
         .sidebar-link.active {
-            background-color: #EDE9FE;
-            color: #6D28D9;
-            font-weight: 500;
+            background-color: var(--color-brand-light);
+            color: var(--color-brand);
+            font-weight: 600;
         }
         .sidebar-link svg {
             width: 1.25rem;

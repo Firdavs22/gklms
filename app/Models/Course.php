@@ -66,26 +66,6 @@ class Course extends Model
     }
 
     /**
-     * Get all lessons for this course (through modules)
-     */
-    public function lessons(): HasManyThrough
-    {
-        return $this->hasManyThrough(Lesson::class, Module::class)
-            ->orderBy('modules.sort_order')
-            ->orderBy('lessons.sort_order');
-    }
-
-    /**
-     * Get published lessons only
-     */
-    public function publishedLessons(): HasManyThrough
-    {
-        return $this->lessons()
-            ->where('lessons.is_published', true)
-            ->where('modules.is_published', true);
-    }
-
-    /**
      * Get all enrollments for this course
      */
     public function enrollments(): HasMany
