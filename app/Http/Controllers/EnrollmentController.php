@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\CourseEnrollment;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
@@ -21,7 +21,7 @@ class EnrollmentController extends Controller
         }
 
         // Check if already enrolled
-        $existing = CourseEnrollment::where('user_id', $user->id)
+        $existing = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->first();
 
@@ -31,7 +31,7 @@ class EnrollmentController extends Controller
         }
 
         // Create enrollment
-        CourseEnrollment::create([
+        Enrollment::create([
             'user_id' => $user->id,
             'course_id' => $course->id,
             'enrolled_at' => now(),
