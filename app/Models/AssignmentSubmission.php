@@ -58,7 +58,7 @@ class AssignmentSubmission extends Model
         $formatted = [];
         $assignment = $this->assignment;
         
-        if (!$assignment) {
+        if (!$assignment || !is_array($this->answers)) {
             return $formatted;
         }
 

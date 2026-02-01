@@ -47,15 +47,16 @@ class AssignmentSubmissionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Студент')
-                    ->description(fn ($record) => $record->user?->email ?? $record->user?->phone)
+                    ->description(fn ($record) => $record->user?->email ?? $record->user?->phone ?? '—')
                     ->searchable(['name', 'email', 'phone']),
 
                 Tables\Columns\TextColumn::make('assignment.lesson.title')
                     ->label('Урок')
+                    ->default('—')
                     ->limit(30)
                     ->searchable(),
 
-                Tables\Columns\BadgeColumn::make('assignment.type')
+                Tables\Columns\TextColumn::make('assignment.type')
                     ->label('Тип')
                     ->formatStateUsing(fn (?string $state) => match ($state) {
                         'text' => '📝 Текст',

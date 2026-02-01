@@ -18,6 +18,10 @@
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Alpine.js -->
+    <script src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
     <style>
         :root {
             --color-primary: {{ $primaryColor }};
@@ -229,5 +233,59 @@
         // Any general scripts can go here
     </script>
     @stack('scripts')
+
+    <!-- Toast Notification System -->
+    <div x-data="{ 
+            show: false, 
+            message: '', 
+            type: 'success',
+            timer: null
+         }"
+         @notify.window="
+            message = $event.detail.message;
+            type = $event.detail.type || 'success';
+            show = true;
+            clearTimeout(timer);
+            timer = setTimeout(() => show = false, 5000);
+         "
+         x-show="show"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-4"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-4"
+         class="fixed bottom-6 right-6 z-[9999] max-w-md w-full"
+         x-cloak>
+        <div :class="{
+                'bg-white border-green-100 shadow-green-100/50': type === 'success',
+                'bg-white border-red-100 shadow-red-100/50': type === 'error',
+                'bg-white border-blue-100 shadow-blue-100/50': type === 'info'
+             }"
+             class="flex items-center p-4 rounded-2xl border shadow-2xl">
+            <div :class="{
+                    'bg-green-100 text-green-600': type === 'success',
+                    'bg-red-100 text-red-600': type === 'error',
+                    'bg-blue-100 text-blue-600': type === 'info'
+                 }"
+                 class="w-10 h-10 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                <template x-if="type === 'success'">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </template>
+                <template x-if="type === 'error'">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </template>
+                <template x-if="type === 'info'">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </template>
+            </div>
+            <div class="flex-grow">
+                <p x-text="message" class="text-sm font-bold text-gray-900"></p>
+            </div>
+            <button @click="show = false" class="ml-4 text-gray-400 hover:text-gray-600 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
 </body>
 </html>
