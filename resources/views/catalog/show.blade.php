@@ -36,7 +36,7 @@
                         <span class="text-gray-500 text-xs">{{ $totalLessons }} видео-уроков</span>
                     </div>
                     
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">{{ $course->title }}</h1>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">{{ $course->title }}</h1>
                     
                     @if($course->description)
                         <div class="prose prose-purple max-w-none text-gray-600 leading-relaxed">
@@ -107,9 +107,9 @@
         <div class="lg:w-1/3 mt-8 lg:mt-0">
             <div class="sticky top-24 bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden p-8">
                 <div class="mb-8">
-                    <p class="text-[10px] text-gray-400 font-extrabold uppercase tracking-[0.2em] mb-2">Стоимость обучения</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mb-2">Стоимость обучения</p>
                     <div class="flex items-baseline space-x-2">
-                        <span class="text-4xl font-extrabold text-gray-900">{{ $course->formatted_price }}</span>
+                        <span class="text-4xl font-bold text-gray-900">{{ $course->formatted_price }}</span>
                         @if(!$course->isFree())
                             <span class="text-gray-400 text-sm line-through">5 900 ₽</span>
                         @endif

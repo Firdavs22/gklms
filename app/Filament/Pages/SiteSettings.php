@@ -36,8 +36,8 @@ class SiteSettings extends Page implements HasForms
             'branding_display_type' => SiteSetting::get('branding_display_type', 'name'),
             'primary_color' => SiteSetting::get('primary_color', '#4A91CD'),
             'secondary_color' => SiteSetting::get('secondary_color', '#D0E3F4'),
-            'heading_font' => SiteSetting::get('heading_font', 'Inter'),
-            'body_font' => SiteSetting::get('body_font', 'Inter'),
+            'heading_font' => SiteSetting::get('heading_font', 'Nunito Sans'),
+            'body_font' => SiteSetting::get('body_font', 'Nunito Sans'),
         ]);
     }
 
@@ -89,21 +89,20 @@ class SiteSettings extends Page implements HasForms
                         Forms\Components\Select::make('heading_font')
                             ->label('Шрифт для заголовков')
                             ->options([
-                                'Inter' => 'Inter (Современный, чистый)',
-                                'Montserrat' => 'Montserrat (Стильный, геометрический)',
-                                'Outfit' => 'Outfit (Премиальный, мягкий)',
-                                'Playfair Display' => 'Playfair Display (Классический, с засечками)',
-                                'Unbounded' => 'Unbounded (Дерзкий, широкий)',
+                                'Nunito Sans' => 'Nunito Sans (Мягкий, современный)',
+                                'Inter' => 'Inter (Чистый, техничный)',
+                                'Montserrat' => 'Montserrat (Стильный)',
+                                'Outfit' => 'Outfit (Премиальный)',
                             ])
                             ->required(),
 
                         Forms\Components\Select::make('body_font')
                             ->label('Шрифт для текста')
                             ->options([
-                                'Inter' => 'Inter (Универсальный)',
-                                'Roboto' => 'Roboto (Технологичный)',
-                                'Open Sans' => 'Open Sans (Дружелюбный)',
-                                'Nunito' => 'Nunito (Округлый, мягкий)',
+                                'Nunito Sans' => 'Nunito Sans (Универсальный)',
+                                'Inter' => 'Inter (Строгий)',
+                                'Roboto' => 'Roboto (Ровный)',
+                                'Open Sans' => 'Open Sans (Легкий)',
                             ])
                             ->required(),
                     ])

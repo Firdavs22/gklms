@@ -14,7 +14,7 @@
 
                 <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
                     <div class="sm:text-center lg:text-left">
-                        <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                        <h1 class="text-4xl tracking-tight font-bold text-gray-900 sm:text-5xl md:text-6xl">
                             <span class="block xl:inline">Растем вместе:</span>
                             <span class="block text-brand xl:inline">от первой улыбки до первого класса</span>
                         </h1>
@@ -102,7 +102,7 @@
                         <div class="mt-auto pt-6 flex items-center justify-between border-t border-gray-50">
                             <div>
                                 <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-0.5">Стоимость</p>
-                                <p class="text-xl font-extrabold text-gray-900">{{ $course->formatted_price }}</p>
+                                <p class="text-xl font-bold text-gray-900">{{ $course->formatted_price }}</p>
                             </div>
                             
                             <a href="{{ route('catalog.show', $course) }}" class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gray-50 text-gray-400 group-hover:bg-brand group-hover:text-white transition-all duration-300 shadow-sm">

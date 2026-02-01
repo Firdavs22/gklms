@@ -36,7 +36,7 @@
                     <span class="bg-purple-100 text-brand text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Мое обучение</span>
                 </div>
                 
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{{ $course->title }}</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6 leading-tight">{{ $course->title }}</h1>
                 
                 <!-- Progress Bar -->
                 <div class="mb-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">

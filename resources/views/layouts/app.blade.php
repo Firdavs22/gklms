@@ -10,11 +10,8 @@
         $brandingType = \App\Models\SiteSetting::get('branding_display_type', 'name');
         $primaryColor = \App\Models\SiteSetting::get('primary_color', '#4A91CD');
         $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#D0E3F4');
-        $headingFont = \App\Models\SiteSetting::get('heading_font', 'Inter');
-        $bodyFont = \App\Models\SiteSetting::get('body_font', 'Inter');
-        
-        $peachColor = '#F1C49E';
-        $greenColor = '#83C696';
+        $headingFont = \App\Models\SiteSetting::get('heading_font', 'Nunito Sans');
+        $bodyFont = \App\Models\SiteSetting::get('body_font', 'Nunito Sans');
         
         $shouldCollapseSidebar = request()->routeIs(['courses.*', 'catalog.*', 'lessons.*']);
         
@@ -41,10 +38,8 @@
         :root {
             --color-primary: {{ $primaryColor }};
             --color-secondary: {{ $secondaryColor }};
-            --color-brand: #4A91CD;
-            --color-brand-light: #D0E3F4;
-            --color-peach: #F1C49E;
-            --color-green: #83C696;
+            --color-brand: var(--color-primary);
+            --color-brand-light: var(--color-secondary);
             
             --font-heading: '{{ $headingFont }}', sans-serif;
             --font-body: '{{ $bodyFont }}', sans-serif;
@@ -53,67 +48,60 @@
         body {
             font-family: var(--font-body);
             -webkit-font-smoothing: antialiased;
+            color: #1f2937;
         }
 
-        h1, h2, h3, h4, h5, h6, .font-heading {
+        h1, h2, h3, h4, font-heading {
             font-family: var(--font-heading);
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
 
-        .gradient-bg {
-            background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-green) 100%);
-        }
-        .text-brand {
-            color: var(--color-brand);
-        }
-        .bg-brand {
-            background-color: var(--color-brand);
-        }
-        .sidebar-link {
+        .text-brand { color: var(--color-brand); }
+        .bg-brand { background-color: var(--color-brand); }
+        
+        /* Filament-style Sidebar */
+        .sidebar-item {
             display: flex;
             align-items: center;
-            padding: 0.6rem 0.875rem;
-            color: #4B5563;
-            border-radius: 0.625rem;
-            transition: all 0.2s;
+            padding: 0.5rem 0.75rem;
+            margin: 0.125rem 0.75rem;
+            color: #4b5563;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
             text-decoration: none;
-            font-size: 0.875rem;
+            font-size: 0.9375rem;
             font-weight: 500;
         }
-        .sidebar-link:hover {
-            background-color: var(--color-brand-light);
-            color: var(--color-brand);
+        .sidebar-item:hover {
+            background-color: #f3f4f6;
+            color: #111827;
         }
-        .sidebar-link.active {
-            background-color: var(--color-brand-light);
-            color: var(--color-brand);
-            font-weight: 700;
+        .sidebar-item.active {
+            background-color: var(--color-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        .sidebar-link svg {
-            width: 1.15rem;
-            height: 1.15rem;
-            margin-right: 0.65rem;
+        .sidebar-item svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
             flex-shrink: 0;
+            transition: color 0.2s;
         }
+        .sidebar-item.active svg {
+            color: #ffffff;
+        }
+        
         [x-cloak] { display: none !important; }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #cbd5e1;
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen selection:bg-brand selection:text-white" x-data="{ sidebarOpen: {{ $shouldCollapseSidebar ? 'false' : 'true' }}, mobileSidebarOpen: false }">
+<body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: {{ $shouldCollapseSidebar ? 'false' : 'true' }}, mobileSidebarOpen: false }">
     <div class="flex min-h-screen">
         <!-- Sidebar Overlay (Mobile) -->
         <div x-show="mobileSidebarOpen" 
@@ -124,54 +112,55 @@
              x-transition:leave="transition-opacity ease-linear duration-300"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900/40 backdrop-blur-[2px] z-40 lg:hidden" x-cloak></div>
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden" x-cloak></div>
 
         <!-- Sidebar -->
-        <aside :class="{ 'translate-x-0 w-60': sidebarOpen || mobileSidebarOpen, '-translate-x-full lg:translate-x-0 lg:w-0': !sidebarOpen && !mobileSidebarOpen }"
-               class="bg-white border-r border-gray-100 fixed h-full overflow-hidden z-50 transition-all duration-300 ease-in-out lg:z-30 shadow-sm">
+        <aside :class="{ 'translate-x-0 w-72': sidebarOpen || mobileSidebarOpen, '-translate-x-full lg:translate-x-0 lg:w-0': !sidebarOpen && !mobileSidebarOpen }"
+               class="bg-white border-r border-gray-200 fixed h-full overflow-hidden z-50 transition-all duration-300 lg:z-30">
             
-            <div class="w-60 flex flex-col h-full">
-                <!-- Logo -->
-                <div class="p-5 border-b border-gray-50 flex items-center justify-between">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 overflow-hidden">
+            <div class="w-72 flex flex-col h-full">
+                <!-- Logo area (Filament style) -->
+                <div class="h-16 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
+                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 overflow-hidden">
                         @if(($brandingType === 'logo' || $brandingType === 'both') && $logoPath && Storage::disk('public')->exists($logoPath))
-                            <img src="{{ Storage::disk('public')->url($logoPath) }}" alt="{{ $siteName }}" class="h-8">
+                            <img src="{{ Storage::disk('public')->url($logoPath) }}" alt="{{ $siteName }}" class="h-8 max-w-full">
                         @elseif($brandingType !== 'logo')
-                            <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                            <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                                 {{ substr($siteName, 0, 1) }}
                             </div>
                         @endif
                         
                         @if($brandingType === 'name' || $brandingType === 'both')
-                            <span class="font-extrabold text-base text-gray-900 truncate tracking-tighter">{{ $siteName }}</span>
+                            <span class="font-bold text-lg text-gray-900 truncate tracking-tight">{{ $siteName }}</span>
                         @endif
                     </a>
                 </div>
                 
                 <!-- Navigation -->
-                <nav class="p-3.5 space-y-1 overflow-y-auto flex-1">
-                    <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <nav class="flex-1 overflow-y-auto py-4">
+                    <div class="px-6 mb-2">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-loose">Обучение</p>
+                    </div>
+                    
+                    <a href="{{ route('dashboard') }}" class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                        <span>Главная</span>
-                    </a>
-                    
-                    <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                         <span>Мои курсы</span>
                     </a>
 
-                    <a href="{{ route('catalog.index') }}" class="sidebar-link {{ request()->routeIs('catalog.*') ? 'active' : '' }}">
+                    <a href="{{ route('catalog.index') }}" class="sidebar-item {{ request()->routeIs('catalog.*') ? 'active' : '' }}">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
                         <span>Каталог</span>
                     </a>
                     
-                    <a href="{{ route('profile.edit') }}" class="sidebar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                    <div class="px-6 mt-6 mb-2 border-t border-gray-50 pt-6">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-loose">Настройки</p>
+                    </div>
+
+                    <a href="{{ route('profile.edit') }}" class="sidebar-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
@@ -179,20 +168,20 @@
                     </a>
                 </nav>
                 
-                <!-- User Info at Bottom -->
-                <div class="p-3.5 border-t border-gray-50 bg-white">
-                    <div class="flex items-center">
-                        <div class="w-9 h-9 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center flex-shrink-0">
-                            <span class="text-brand font-black text-xs">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
+                <!-- Bottom User section -->
+                <div class="p-4 border-t border-gray-100 flex-shrink-0">
+                    <div class="flex items-center group">
+                        <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 transition group-hover:bg-brand group-hover:text-white">
+                            {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
                         </div>
-                        <div class="ml-2.5 flex-1 min-w-0">
-                            <p class="text-xs font-bold text-gray-900 truncate">{{ auth()->user()->name ?? 'Пользователь' }}</p>
-                            <p class="text-[9px] font-medium text-gray-400 truncate uppercase tracking-tighter">{{ auth()->user()->email ?? auth()->user()->phone }}</p>
+                        <div class="ml-3 flex-1 min-w-0">
+                            <p class="text-sm font-bold text-gray-900 truncate">{{ auth()->user()->name ?? 'Пользователь' }}</p>
+                            <p class="text-[11px] text-gray-500 truncate">{{ auth()->user()->email ?? auth()->user()->phone }}</p>
                         </div>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="text-gray-300 hover:text-red-500 transition p-1" title="Выйти">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button type="submit" class="text-gray-400 hover:text-red-500 transition p-1.5" title="Выйти">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
                             </button>
@@ -202,75 +191,59 @@
             </div>
         </aside>
         
-        <!-- Header -->
-        <div class="fixed top-0 left-0 right-0 h-14 bg-white/70 backdrop-blur-lg border-b border-gray-100/50 z-40 transition-all duration-300 ease-in-out"
-             :class="{ 'lg:left-60': sidebarOpen, 'lg:left-0': !sidebarOpen }">
-            <div class="flex items-center h-full px-4 lg:px-6">
-                <!-- Toggle Button -->
-                <button @click="sidebarOpen = !sidebarOpen" class="hidden lg:flex w-9 h-9 items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition mr-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path x-show="sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16"></path>
-                        <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+        <!-- Main Content Area -->
+        <main class="flex-1 transition-all duration-300 ease-in-out flex flex-col min-w-0"
+              :class="{ 'lg:ml-72': sidebarOpen, 'lg:ml-0': !sidebarOpen }">
+            
+            <!-- Navbar -->
+            <header class="h-16 bg-white border-b border-gray-200 sticky top-0 z-20 px-4 md:px-8 flex items-center justify-between">
+                <div class="flex items-center">
+                    <button @click="sidebarOpen = !sidebarOpen" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg transition mr-4 lg:flex hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path x-show="sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16"></path>
+                            <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    
+                    <button @click="mobileSidebarOpen = true" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg transition mr-4 lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
 
-                <!-- Mobile Menu Button -->
-                <button @click="mobileSidebarOpen = true" class="lg:hidden w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-
-                <!-- Page context indicator -->
-                <div class="ml-3 font-black text-gray-900 tracking-tighter hidden sm:block text-sm uppercase">
-                    @yield('title')
+                    <h1 class="font-bold text-lg text-gray-900 truncate">@yield('title')</h1>
                 </div>
 
-                <div class="ml-auto flex items-center space-x-4">
-                    <a href="{{ route('catalog.index') }}" class="text-[10px] font-black uppercase tracking-[0.15em] text-brand hover:opacity-70 transition border-b-2 border-brand/20 pb-0.5">В каталог</a>
+                <div class="flex items-center space-x-3">
+                    <a href="{{ route('catalog.index') }}" class="hidden sm:flex items-center px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        Все курсы
+                    </a>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Main Content Wrapper -->
-        <main class="flex-1 transition-all duration-300 ease-in-out flex flex-col"
-              :class="{ 'lg:ml-60': sidebarOpen, 'lg:ml-0': !sidebarOpen }">
+            </header>
             
-            <div class="h-14"></div> <!-- Spacer for header -->
-            
-            <!-- Flash Messages -->
-            @if(session('success'))
-            <div class="max-w-6xl w-full mx-auto px-4 lg:px-6 pt-4">
-                <div class="bg-green-50 border border-green-100/50 text-green-700 px-4 py-2.5 rounded-xl flex items-center shadow-sm">
-                    <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span class="text-xs font-bold leading-tight">{{ session('success') }}</span>
+            <!-- Page Content with constraint for Desktop -->
+            <div class="flex-1 w-full @if(!request()->routeIs('lessons.*')) max-w-7xl mx-auto @endif">
+                @if(session('success'))
+                <div class="p-6 pb-0">
+                    <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center text-sm shadow-sm ring-1 ring-emerald-500/5">
+                        <svg class="w-5 h-5 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ session('success') }}
+                    </div>
                 </div>
-            </div>
-            @endif
-            
-            @if(session('error'))
-            <div class="max-w-6xl w-full mx-auto px-4 lg:px-6 pt-4">
-                <div class="bg-red-50 border border-red-100/50 text-red-700 px-4 py-2.5 rounded-xl flex items-center shadow-sm">
-                    <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span class="text-xs font-bold leading-tight">{{ session('error') }}</span>
-                </div>
-            </div>
-            @endif
-            
-            <!-- Page Content -->
-            <div class="flex-1">
+                @endif
+                
                 @yield('content')
             </div>
             
-            <!-- Footer -->
-            <footer class="mt-auto">
-                <div class="max-w-6xl mx-auto px-6 py-6">
-                    <p class="text-center text-[9px] font-black uppercase tracking-[0.2em] text-gray-300">
-                        © {{ date('Y') }} {{ $siteName }}. Растем вместе 🤰
+            <footer class="py-10 border-t border-gray-100 mt-auto">
+                <div class="max-w-7xl mx-auto px-6 text-center">
+                    <p class="text-sm text-gray-400">
+                        © {{ date('Y') }} {{ $siteName }}. Все права защищены.
                     </p>
                 </div>
             </footer>
@@ -280,56 +253,19 @@
     @stack('scripts')
 
     <!-- Toast Notification System -->
-    <div x-data="{ 
-            show: false, 
-            message: '', 
-            type: 'success',
-            timer: null
-         }"
-         @notify.window="
-            message = $event.detail.message;
-            type = $event.detail.type || 'success';
-            show = true;
-            clearTimeout(timer);
-            timer = setTimeout(() => show = false, 5000);
-         "
-         x-show="show"
+    <div x-data="{ show: false, message: '', type: 'success', timer: null }"
+         @notify.window="message = $event.detail.message; type = $event.detail.type || 'success'; show = true; clearTimeout(timer); timer = setTimeout(() => show = false, 5000);"
+         x-show="show" x-cloak
          x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 transform translate-y-4 scale-95"
-         x-transition:enter-end="opacity-100 transform translate-y-0 scale-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
-         x-transition:leave-end="opacity-0 transform translate-y-4 scale-95"
-         class="fixed bottom-6 right-6 z-[9999] max-w-sm w-full"
-         x-cloak>
-        <div :class="{
-                'bg-white border-green-100 shadow-2xl shadow-green-100/30': type === 'success',
-                'bg-white border-red-100 shadow-2xl shadow-red-100/30': type === 'error',
-                'bg-white border-blue-100 shadow-2xl shadow-blue-100/30': type === 'info'
-             }"
-             class="flex items-center p-3.5 rounded-2xl border">
-            <div :class="{
-                    'bg-green-100 text-green-600': type === 'success',
-                    'bg-red-100 text-red-600': type === 'error',
-                    'bg-blue-100 text-blue-600': type === 'info'
-                 }"
-                 class="w-9 h-9 rounded-xl flex items-center justify-center mr-3.5 flex-shrink-0">
-                <template x-if="type === 'success'">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                </template>
-                <template x-if="type === 'error'">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </template>
-                <template x-if="type === 'info'">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </template>
-            </div>
-            <div class="flex-grow">
-                <p x-text="message" class="text-xs font-black text-gray-900 leading-tight"></p>
-            </div>
-            <button @click="show = false" class="ml-3 text-gray-300 hover:text-gray-500 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+         x-transition:enter-start="opacity-0 transform translate-y-4"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         class="fixed bottom-6 right-6 z-[9999] max-w-sm w-full">
+        <div :class="{'bg-emerald-50 border-emerald-100 shadow-emerald-100': type === 'success', 'bg-red-50 border-red-100 shadow-red-100': type === 'error'}"
+             class="flex items-center p-4 rounded-xl border shadow-xl">
+             <div :class="{'text-emerald-500': type === 'success', 'text-red-500': type === 'error'}" class="flex-shrink-0 mr-3">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
+             </div>
+             <p x-text="message" class="text-sm font-semibold text-gray-900"></p>
         </div>
     </div>
 </body>
