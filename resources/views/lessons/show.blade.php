@@ -106,19 +106,13 @@
             <div class="bg-white rounded-2xl shadow-lg border border-brand/10 overflow-hidden mb-8 ring-1 ring-brand/5">
                 @if($userSubmission)
                     <!-- COMPLETED STATE -->
-                    <div class="p-8 text-center bg-green-50/50">
-                        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                            </svg>
+                    <div class="p-6 text-center bg-gray-50/50">
+                        <div class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-2">
+                            <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            Задание пройдено
                         </div>
-                        <h2 class="text-xl font-black text-green-900 mb-2">Задание пройдено! ✅</h2>
-                        <p class="text-green-700 font-medium">Ваш ответ успешно принят и сохранен в системе.</p>
-                        
                         @if($assignment->type === 'quiz' && $userSubmission->score !== null)
-                            <div class="mt-4 inline-block bg-white px-4 py-2 rounded-xl text-sm font-bold border border-green-100">
-                                Результат: <span class="text-green-600">{{ $userSubmission->score }} / {{ $userSubmission->max_score }}</span>
-                            </div>
+                            <p class="text-[10px] font-bold text-gray-400">Результат: {{ $userSubmission->score }} / {{ $userSubmission->max_score }}</p>
                         @endif
                     </div>
                 @else

@@ -36,6 +36,8 @@ class SiteSettings extends Page implements HasForms
             'branding_display_type' => SiteSetting::get('branding_display_type', 'name'),
             'primary_color' => SiteSetting::get('primary_color', '#4A91CD'),
             'secondary_color' => SiteSetting::get('secondary_color', '#D0E3F4'),
+            'heading_font' => SiteSetting::get('heading_font', 'Inter'),
+            'body_font' => SiteSetting::get('body_font', 'Inter'),
         ]);
     }
 
@@ -73,8 +75,8 @@ class SiteSettings extends Page implements HasForms
                     ])
                     ->columns(1),
 
-                Forms\Components\Section::make('Цветовая схема')
-                    ->description('Эти цвета будут использоваться на страницах для пользователей')
+                Forms\Components\Section::make('Цветовая схема и шрифты')
+                    ->description('Настройте цвета и шрифты для страниц обучения')
                     ->schema([
                         Forms\Components\ColorPicker::make('primary_color')
                             ->label('Основной цвет')
@@ -82,6 +84,27 @@ class SiteSettings extends Page implements HasForms
 
                         Forms\Components\ColorPicker::make('secondary_color')
                             ->label('Дополнительный цвет')
+                            ->required(),
+
+                        Forms\Components\Select::make('heading_font')
+                            ->label('Шрифт для заголовков')
+                            ->options([
+                                'Inter' => 'Inter (Современный, чистый)',
+                                'Montserrat' => 'Montserrat (Стильный, геометрический)',
+                                'Outfit' => 'Outfit (Премиальный, мягкий)',
+                                'Playfair Display' => 'Playfair Display (Классический, с засечками)',
+                                'Unbounded' => 'Unbounded (Дерзкий, широкий)',
+                            ])
+                            ->required(),
+
+                        Forms\Components\Select::make('body_font')
+                            ->label('Шрифт для текста')
+                            ->options([
+                                'Inter' => 'Inter (Универсальный)',
+                                'Roboto' => 'Roboto (Технологичный)',
+                                'Open Sans' => 'Open Sans (Дружелюбный)',
+                                'Nunito' => 'Nunito (Округлый, мягкий)',
+                            ])
                             ->required(),
                     ])
                     ->columns(2),
@@ -104,6 +127,8 @@ class SiteSettings extends Page implements HasForms
         SiteSetting::set('logo_path', $logoPath);
         SiteSetting::set('primary_color', $data['primary_color']);
         SiteSetting::set('secondary_color', $data['secondary_color']);
+        SiteSetting::set('heading_font', $data['heading_font']);
+        SiteSetting::set('body_font', $data['body_font']);
 
         Notification::make()
             ->title('Настройки сохранены')

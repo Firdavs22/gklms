@@ -95,6 +95,7 @@ class AssignmentSubmissionResource extends Resource
                 Tables\Filters\SelectFilter::make('assignment_id')
                     ->label('Задание')
                     ->relationship('assignment', 'title')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->title ?? "Задание #{$record->id} ({$record->type_label})")
                     ->searchable()
                     ->preload(),
 
