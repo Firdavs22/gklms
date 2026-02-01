@@ -168,14 +168,16 @@ class TelegramBotController extends Controller
         }
 
         // Phone verified! Create or find user
-        $user = User::firstOrCreate(
-            ['phone' => $expectedPhone],
-            [
-                'name' => $contact['first_name'] . ' ' . ($contact['last_name'] ?? ''),
-                'email' => null,
-                'telegram_id' => $contact['user_id'] ?? null,
-            ]
-        );
+        $user = User::where('phone', $expectedPhone)->first();
+        
+        if (!$user) {
+            $user = new User();
+            $user->phone = $expectedPhone;
+            $user->name = trim($contact['first_name'] . ' ' . ($contact['last_name'] ?? ''));
+            $user->telegram_id = $contact['user_id'] ?? null;
+            $user->password = bcrypt(\Illuminate\Support\Str::random(16));
+            $user->save();
+        }
 
         // Update telegram_id if not set
         if (!$user->telegram_id && isset($contact['user_id'])) {
