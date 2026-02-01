@@ -30,32 +30,27 @@ class AdminLogin extends BaseLogin
 
     public function form(Form $form): Form
     {
-        if ($this->step === 2) {
-            return $form
-                ->schema([
-                    TextInput::make('telegram_code')
-                        ->label('Код из Telegram')
-                        ->placeholder('Введите 6-значный код')
-                        ->required()
-                        ->numeric()
-                        ->length(6)
-                        ->autofocus(),
-                ])
-                ->statePath('data');
-        }
-
         return $form
             ->schema([
                 TextInput::make('email')
                     ->label('Логин')
                     ->required()
-                    ->autofocus()
+                    ->visible(fn () => $this->step === 1)
                     ->autocomplete('username'),
                 TextInput::make('password')
                     ->label('Пароль')
                     ->password()
                     ->required()
+                    ->visible(fn () => $this->step === 1)
                     ->autocomplete('current-password'),
+                TextInput::make('telegram_code')
+                    ->label('Код из Telegram')
+                    ->placeholder('Введите 6-значный код')
+                    ->required()
+                    ->numeric()
+                    ->length(6)
+                    ->visible(fn () => $this->step === 2)
+                    ->autofocus(),
             ])
             ->statePath('data');
     }
