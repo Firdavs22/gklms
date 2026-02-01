@@ -118,8 +118,13 @@
             <aside class="lg:w-1/3 mt-8 lg:mt-0">
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-6">
                     <div class="text-center mb-6">
-                        <span class="text-4xl font-bold text-brand-blue">{{ $course->formatted_price }}</span>
-                        <p class="text-gray-500 mt-1">единоразовая оплата</p>
+                        @if($course->isFree())
+                            <span class="text-4xl font-bold text-brand-green">Бесплатно</span>
+                            <p class="text-gray-500 mt-1">открытый доступ</p>
+                        @else
+                            <span class="text-4xl font-bold text-brand-blue">{{ $course->formatted_price }}</span>
+                            <p class="text-gray-500 mt-1">единоразовая оплата</p>
+                        @endif
                     </div>
                     
                     <ul class="space-y-3 mb-6">
@@ -149,16 +154,31 @@
                         </li>
                     </ul>
                     
-                    <a 
-                        href="#buy" 
-                        class="block w-full bg-brand-blue text-white text-center font-semibold py-4 px-6 rounded-xl hover:opacity-90 transition shadow-lg"
-                    >
-                        Купить курс
-                    </a>
-                    
-                    <p class="text-center text-gray-400 text-xs mt-4">
-                        Безопасная оплата через YoKassa
-                    </p>
+                    @if($course->isFree())
+                        @auth
+                            <form action="{{ route('courses.enroll', $course) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="block w-full bg-brand-green text-white text-center font-semibold py-4 px-6 rounded-xl hover:opacity-90 transition shadow-lg">
+                                    Записаться бесплатно
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}?redirect={{ url()->current() }}" class="block w-full bg-brand-green text-white text-center font-semibold py-4 px-6 rounded-xl hover:opacity-90 transition shadow-lg">
+                                Войти и записаться
+                            </a>
+                        @endauth
+                    @else
+                        <a 
+                            href="https://globokids.ru" 
+                            target="_blank"
+                            class="block w-full bg-brand-blue text-white text-center font-semibold py-4 px-6 rounded-xl hover:opacity-90 transition shadow-lg"
+                        >
+                            Купить курс
+                        </a>
+                        <p class="text-center text-gray-400 text-xs mt-4">
+                            Безопасная оплата через YoKassa
+                        </p>
+                    @endif
                 </div>
             </aside>
         </div>

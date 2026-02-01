@@ -102,10 +102,21 @@ class Course extends Model
     }
 
     /**
+     * Check if course is free
+     */
+    public function isFree(): bool
+    {
+        return empty($this->price) || $this->price <= 0;
+    }
+
+    /**
      * Get the formatted price
      */
     public function getFormattedPriceAttribute(): string
     {
+        if ($this->isFree()) {
+            return 'Бесплатно';
+        }
         return number_format($this->price, 0, ',', ' ') . ' ₽';
     }
 

@@ -27,6 +27,11 @@ Route::get('/', function () {
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/course/{course:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
+// Free course enrollment (requires auth)
+Route::post('/course/{course:slug}/enroll', [\App\Http\Controllers\EnrollmentController::class, 'enrollFree'])
+    ->middleware('auth')
+    ->name('courses.enroll');
+
 // Guest routes (login/register)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [MagicLinkController::class, 'showForm'])->name('login');
