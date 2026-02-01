@@ -58,17 +58,19 @@ class AssignmentSubmissionResource extends Resource
 
                 Tables\Columns\TextColumn::make('assignment.type')
                     ->label('Тип')
+                    ->badge()
                     ->formatStateUsing(fn (?string $state) => match ($state) {
                         'text' => '📝 Текст',
                         'poll' => '📊 Опрос',
                         'quiz' => '✅ Тест',
                         default => $state ?? '-',
                     })
-                    ->colors([
-                        'primary' => 'text',
-                        'warning' => 'poll',
-                        'success' => 'quiz',
-                    ]),
+                    ->color(fn (?string $state): string => match ($state) {
+                        'text' => 'gray',
+                        'poll' => 'warning',
+                        'quiz' => 'success',
+                        default => 'gray',
+                    }),
 
                 Tables\Columns\TextColumn::make('score')
                     ->label('Результат')

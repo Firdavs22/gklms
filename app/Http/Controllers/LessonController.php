@@ -62,12 +62,18 @@ class LessonController extends Controller
             ->with(['questions.answers'])
             ->first();
 
+        // Get user's submission if any
+        $userSubmission = $assignment ? \App\Models\AssignmentSubmission::where('user_id', $user->id)
+            ->where('assignment_id', $assignment->id)
+            ->first() : null;
+
         return view('lessons.show', [
             'course' => $course,
             'module' => $module,
             'lesson' => $lesson,
             'progress' => $progress,
             'assignment' => $assignment,
+            'userSubmission' => $userSubmission,
             'previousLesson' => $previousLesson,
             'nextLesson' => $nextLesson,
             'allModules' => $allModules,
