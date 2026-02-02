@@ -121,12 +121,17 @@
              class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-40 lg:hidden" x-cloak></div>
 
         <!-- Sidebar -->
-        <aside :class="{ 'translate-x-0 w-72': sidebarOpen || mobileSidebarOpen, '-translate-x-full lg:translate-x-0 lg:w-0': !sidebarOpen && !mobileSidebarOpen }"
+        <aside :class="{ 
+                   'translate-x-0': mobileSidebarOpen, 
+                   '-translate-x-full lg:translate-x-0': !mobileSidebarOpen,
+                   'w-72': mobileSidebarOpen || sidebarOpen,
+                   'lg:w-0': !sidebarOpen
+               }"
                class="bg-white border-r border-gray-200 overflow-hidden fixed h-full z-50 transition-all duration-300 lg:z-30 shadow-sm">
             
             <div class="w-72 flex flex-col h-full">
-                <!-- Logo area -->
-                <div class="h-16 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
+                <!-- Logo & Close area -->
+                <div class="h-16 flex items-center justify-between px-6 border-b border-gray-100 flex-shrink-0">
                     <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 overflow-hidden">
                         @if(($brandingType === 'logo' || $brandingType === 'both') && $logoPath && Storage::disk('public')->exists($logoPath))
                             <img src="{{ Storage::disk('public')->url($logoPath) }}" alt="{{ $siteName }}" class="h-8 max-w-full">
@@ -140,6 +145,13 @@
                             <span class="font-bold text-lg text-gray-900 truncate tracking-tight">{{ $siteName }}</span>
                         @endif
                     </a>
+
+                    <!-- Mobile Close Button -->
+                    <button @click="mobileSidebarOpen = false" class="lg:hidden p-2 -mr-2 text-gray-400 hover:text-gray-600 transition" title="Закрыть">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
                 
                 <!-- Navigation -->
