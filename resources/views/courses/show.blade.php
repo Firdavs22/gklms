@@ -112,7 +112,7 @@
                 <div class="divide-y divide-gray-50">
                     @foreach($module->publishedLessons as $lessonIndex => $lesson)
                     @php
-                        $isCompleted = $lesson->progress->first()?->is_completed ?? false;
+                        $isCompleted = isset($completedLessonIds[$lesson->id]);
                     @endphp
                     <a href="{{ route('lessons.show', [$course, $lesson]) }}" 
                        class="flex items-center p-5 hover:bg-gray-50 transition group">

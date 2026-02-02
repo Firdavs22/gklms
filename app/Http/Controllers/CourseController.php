@@ -20,36 +20,39 @@ class CourseController extends Controller
                 ->with('error', 'У вас нет доступа к этому курсу.');
         }
 
-        // Load modules with lessons and progress
+        // Load modules with lessons
         $modules = $course->publishedModules()
-            ->with(['publishedLessons' => function ($q) use ($user) {
-                $q->with(['progress' => fn ($p) => $p->where('user_id', $user->id)]);
+            ->with(['publishedLessons' => function ($q) {
+                // Ensure lessons are ordered correctly within the module
+                $q->orderBy('lesson_module.sort_order');
             }])
             ->get();
 
-        // Calculate progress
-        $totalLessons = 0;
-        $completedLessons = 0;
-        
-        foreach ($modules as $module) {
-            foreach ($module->publishedLessons as $lesson) {
-                $totalLessons++;
-                if ($lesson->progress->first()?->is_completed) {
-                    $completedLessons++;
-                }
-            }
-        }
+        // Collect all lesson IDs to fetch progress efficiently
+        $allLessonIds = $modules->flatMap(fn($m) => $m->publishedLessons)->pluck('id')->unique();
+        $totalLessons = $allLessonIds->count();
+
+        // Fetch completed lesson IDs for this user
+        $completedLessonIds = \App\Models\LessonProgress::where('user_id', $user->id)
+            ->whereIn('lesson_id', $allLessonIds)
+            ->where('is_completed', true)
+            ->pluck('lesson_id')
+            ->flip() // Flip for faster lookup (id => index)
+            ->toArray();
+
+        $completedCount = count($completedLessonIds);
         
         $progressPercent = $totalLessons > 0 
-            ? round(($completedLessons / $totalLessons) * 100) 
+            ? round(($completedCount / $totalLessons) * 100) 
             : 0;
 
         return view('courses.show', [
             'course' => $course,
             'modules' => $modules,
             'progressPercent' => $progressPercent,
-            'completedLessons' => $completedLessons,
+            'completedLessons' => $completedCount,
             'totalLessons' => $totalLessons,
+            'completedLessonIds' => $completedLessonIds, // Pass lookup array
         ]);
     }
 }
