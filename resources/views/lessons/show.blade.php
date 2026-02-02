@@ -3,11 +3,23 @@
 @section('title', $lesson->title . ' - GloboKids')
 
 @section('content')
-<div class="min-h-[calc(100vh-64px)] bg-gray-50 flex flex-col lg:flex-row">
+<div class="min-h-[calc(100vh-64px)] bg-gray-50 flex flex-col lg:flex-row" x-data="{ mobileMenuOpen: false }">
+    <!-- Mobile "Show Menu" Button -->
+    <div class="lg:hidden bg-white border-b border-gray-100 p-4 sticky top-0 z-20 flex items-center justify-between shadow-sm">
+        <h2 class="text-sm font-bold text-gray-900 truncate max-w-[70%]">Программа курса</h2>
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-brand font-bold text-xs uppercase tracking-wider flex items-center bg-brand/5 px-3 py-1.5 rounded-lg">
+            <span x-text="mobileMenuOpen ? 'Скрыть' : 'Показать'">Показать</span>
+            <svg class="w-4 h-4 ml-1 transition-transform" :class="mobileMenuOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+        </button>
+    </div>
+
     <!-- Sidebar - Course Navigation -->
-    <aside class="lg:w-80 bg-white border-r border-gray-100 lg:h-[calc(100vh-64px)] lg:sticky lg:top-16 overflow-y-auto z-10"
+    <aside class="lg:w-80 bg-white border-b lg:border-b-0 lg:border-r border-gray-100 lg:h-[calc(100vh-64px)] lg:sticky lg:top-16 overflow-y-auto z-10"
+           :class="mobileMenuOpen ? 'block' : 'hidden lg:block'"
            x-data="{ activeModule: {{ $module->id }} }">
-        <div class="p-4 border-b border-gray-50">
+        <div class="p-4 border-b border-gray-50 flex items-center justify-between">
             <a href="{{ route('courses.show', $course) }}" class="flex items-center text-brand hover:opacity-80 transition font-bold text-xs uppercase tracking-wider">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>

@@ -26,11 +26,33 @@ class DashboardController extends Controller
             $totalLessons += $enrollment->course->lessons()->where('lessons.is_published', true)->count();
         }
 
+        // Determine "Last Viewed" logic
+        $lastProgress = $user->lessonProgress()
+            ->with(['lesson.module.course'])
+            ->latest('updated_at')
+            ->first();
+
+        $lastLessonUrl = $lastProgress 
+            ? route('lessons.show', [$lastProgress->lesson->module->course, $lastProgress->lesson]) 
+            : '#';
+
+        $lastCourseUrl = $lastProgress
+            ? route('courses.show', $lastProgress->lesson->module->course)
+            : ($enrollments->first() ? route('courses.show', $enrollments->first()->course) : route('catalog.index'));
+
+        if ($totalLessons == 0 && $enrollments->isNotEmpty()) {
+             // Fallback if no lessons found (edge case) but has course
+             $lastLessonUrl = route('courses.show', $enrollments->first()->course);
+        }
+
         return view('dashboard', [
             'user' => $user,
             'enrollments' => $enrollments,
             'completedLessons' => $completedLessons,
             'totalLessons' => $totalLessons,
+            'lastLessonUrl' => $lastLessonUrl,
+            'lastCourseUrl' => $lastCourseUrl,
+            'hasStarted' => $lastProgress !== null,
         ]);
     }
 }

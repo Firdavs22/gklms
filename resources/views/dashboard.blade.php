@@ -18,51 +18,51 @@
 <div class="px-4 py-8 md:px-0">
     {{-- Quick Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-transform hover:-translate-y-1">
+        <a href="#my-courses" class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md group cursor-pointer block">
             <div class="flex items-center">
-                <div class="w-14 h-14 rounded-2xl bg-brand/10 flex items-center justify-center mr-4">
-                    <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 rounded-2xl bg-brand/10 flex items-center justify-center mr-4 group-hover:bg-brand group-hover:text-white transition-colors">
+                    <svg class="w-7 h-7 text-brand group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-0.5">Курсов</p>
+                    <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-0.5 group-hover:text-brand transition-colors">Курсов</p>
                     <p class="text-2xl font-bold text-gray-900 leading-none">{{ $enrollments->count() }}</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-transform hover:-translate-y-1">
+        <a href="{{ $lastCourseUrl }}" class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md group cursor-pointer block">
             <div class="flex items-center">
-                <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center mr-4">
-                    <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center mr-4 group-hover:bg-green-500 group-hover:text-white transition-colors">
+                    <svg class="w-7 h-7 text-green-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-0.5">Пройдено</p>
+                    <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-0.5 group-hover:text-green-600 transition-colors">Пройдено</p>
                     <p class="text-2xl font-bold text-gray-900 leading-none">{{ $completedLessons ?? 0 }}</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-transform hover:-translate-y-1">
+        <a href="{{ $hasStarted ? $lastLessonUrl : '#my-courses' }}" class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md group cursor-pointer block">
             <div class="flex items-center">
-                <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center mr-4">
-                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center mr-4 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                    <svg class="w-7 h-7 text-orange-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-0.5">Всего уроков</p>
+                    <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 mb-0.5 group-hover:text-orange-500 transition-colors">Всего уроков</p>
                     <p class="text-2xl font-bold text-gray-900 leading-none">{{ $totalLessons ?? 0 }}</p>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     {{-- Section Title --}}
-    <div class="flex items-center justify-between mb-8">
+    <div id="my-courses" class="flex items-center justify-between mb-8 pt-4">
         <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Мои программы</h2>
     </div>
 
