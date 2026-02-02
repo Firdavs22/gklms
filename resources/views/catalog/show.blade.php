@@ -58,45 +58,67 @@
                 </h3>
 
                 @foreach($modules as $module)
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                        <div class="p-5 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-                            <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Модуль {{ $loop->iteration }}</p>
-                                <h4 class="font-bold text-gray-900">{{ $module->title }}</h4>
-                            </div>
-                            <span class="bg-white border border-gray-100 px-3 py-1 rounded-full text-xs text-gray-500 font-medium">
-                                {{ $module->publishedLessons->count() }} уроков
-                            </span>
-                        </div>
-                        <div class="divide-y divide-gray-50">
-                            @foreach($module->publishedLessons as $lesson)
-                                <div class="p-5 flex items-center justify-between group hover:bg-gray-50/80 transition-colors">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-white group-hover:text-brand transition-all">
-                                            @if($lesson->video_path)
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                            @else
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                                </svg>
-                                            @endif
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ $lesson->title }}</p>
-                                        </div>
-                                    </div>
-                                    @if($lesson->is_published)
-                                        <div class="text-brand opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden" 
+                         x-data="{ isOpen: {{ $loop->first ? 'true' : 'false' }} }"
+                         :class="isOpen ? 'ring-1 ring-brand/10 shadow-md' : ''">
+                        
+                        <button @click="isOpen = !isOpen" class="w-full p-5 border-b border-gray-50 flex justify-between items-center bg-gray-50/50 hover:bg-gray-50 transition-colors text-left focus:outline-none">
+                            <div class="flex items-center">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full border border-gray-200 text-gray-400 flex items-center justify-center font-bold text-xs mr-4 transition-colors"
+                                      :class="isOpen ? 'bg-brand text-white border-brand' : ''">
+                                    {{ $loop->iteration }}
+                                </span>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">{{ $module->title }}</h4>
+                                    @if($module->description)
+                                        <p class="text-xs text-gray-500 mt-0.5">{{ Str::limit($module->description, 60) }}</p>
                                     @endif
                                 </div>
-                            @endforeach
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <span class="hidden sm:inline-block bg-white border border-gray-100 px-3 py-1 rounded-full text-xs text-gray-500 font-medium mr-4">
+                                    {{ $module->publishedLessons->count() }} уроков
+                                </span>
+                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300"
+                                     :class="isOpen ? 'rotate-180 text-brand' : ''"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </button>
+
+                        <div x-show="isOpen" x-collapse x-cloak>
+                            <div class="divide-y divide-gray-50">
+                                @foreach($module->publishedLessons as $lesson)
+                                    <div class="p-5 flex items-center justify-between group hover:bg-gray-50/80 transition-colors">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-white group-hover:text-brand transition-all">
+                                                @if($lesson->video_path)
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                @else
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                    </svg>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">{{ $lesson->title }}</p>
+                                            </div>
+                                        </div>
+                                        @if($lesson->is_published)
+                                            <div class="text-brand opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @endforeach
