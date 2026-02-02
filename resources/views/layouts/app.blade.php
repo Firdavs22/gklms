@@ -110,24 +110,12 @@
 <body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: {{ $shouldCollapseSidebar ? 'false' : 'true' }}, mobileSidebarOpen: false }">
     <div class="flex min-h-screen">
         <!-- Sidebar Overlay (Mobile) -->
-        <div x-show="mobileSidebarOpen" 
-             @click="mobileSidebarOpen = false"
-             x-transition:enter="transition-opacity ease-linear duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-40 lg:hidden" x-cloak></div>
-
-        <!-- Sidebar -->
+        <!-- Sidebar (Hidden on Mobile) -->
         <aside :class="{ 
-                   'translate-x-0': mobileSidebarOpen, 
-                   '-translate-x-full lg:translate-x-0': !mobileSidebarOpen,
-                   'w-72': mobileSidebarOpen || sidebarOpen,
+                   'lg:w-72': sidebarOpen,
                    'lg:w-0': !sidebarOpen
                }"
-               class="bg-white border-r border-gray-200 overflow-hidden fixed h-full z-50 transition-all duration-300 lg:z-30 shadow-sm">
+               class="bg-white border-r border-gray-200 overflow-hidden fixed h-full z-50 transition-all duration-300 lg:z-30 shadow-sm hidden lg:block">
             
             <div class="w-72 flex flex-col h-full">
                 <!-- Logo & Close area -->
@@ -210,30 +198,23 @@
         </aside>
         
         <!-- Main Content Area -->
-        <main class="flex-1 transition-all duration-300 ease-in-out flex flex-col min-w-0"
+        <main class="flex-1 transition-all duration-300 ease-in-out flex flex-col min-w-0 bg-gray-50 pb-20 lg:pb-0"
               :class="{ 'lg:ml-72': sidebarOpen, 'lg:ml-0': !sidebarOpen }">
             
-            <!-- Navbar -->
-            <header class="h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20 px-4 md:px-8 flex items-center justify-between">
+            <!-- Navbar (Desktop Only) -->
+            <header class="hidden lg:flex h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20 px-8 items-center justify-between">
                 <div class="flex items-center">
-                    <button @click="sidebarOpen = !sidebarOpen" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-lg transition mr-4 lg:flex hidden">
+                    <button @click="sidebarOpen = !sidebarOpen" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-lg transition mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path x-show="sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16"></path>
                             <path x-show="!sidebarOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
-                    
-                    <button @click="mobileSidebarOpen = true" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-lg transition mr-4 lg:hidden">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-
                     <h1 class="font-bold text-lg text-gray-900 truncate">@yield('title')</h1>
                 </div>
 
                 <div class="flex items-center space-x-3">
-                    <a href="{{ route('catalog.index') }}" class="hidden sm:flex items-center px-4 py-2 bg-accent/10 border border-accent/20 rounded-lg text-sm font-bold text-orange-900 hover:bg-accent/20 transition">
+                    <a href="{{ route('catalog.index') }}" class="flex items-center px-4 py-2 bg-accent/10 border border-accent/20 rounded-lg text-sm font-bold text-orange-900 hover:bg-accent/20 transition">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
@@ -241,11 +222,16 @@
                     </a>
                 </div>
             </header>
+
+            <!-- Mobile Header (Logo & Title) -->
+            <header class="lg:hidden h-14 bg-white/90 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-20 px-4 flex items-center justify-center">
+                <span class="font-bold text-base text-gray-900 truncate">@yield('title')</span>
+            </header>
             
             <!-- Page Content -->
-            <div class="flex-1 w-full @if(!request()->routeIs('lessons.*')) max-w-7xl mx-auto @endif">
+            <div class="flex-1 w-full @if(!request()->routeIs('lessons.*')) max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 @endif pt-4 lg:pt-6">
                 @if(session('success'))
-                <div class="p-6 pb-0">
+                <div class="mb-6">
                     <div class="bg-success/10 border border-success/20 text-green-950 px-4 py-3 rounded-xl flex items-center text-sm shadow-sm ring-1 ring-success/5">
                         <svg class="w-5 h-5 mr-3 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -258,7 +244,7 @@
                 @yield('content')
             </div>
             
-            <footer class="py-10 border-t border-gray-100 mt-auto">
+            <footer class="py-6 border-t border-gray-100 mt-auto hidden lg:block">
                 <div class="max-w-7xl mx-auto px-6 text-center">
                     <p class="text-xs text-gray-400">
                         © {{ date('Y') }} {{ $siteName }}. Растем вместе 🤰
@@ -266,6 +252,32 @@
                 </div>
             </footer>
         </main>
+
+        <!-- Bottom Navigation (Mobile Only) -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 pb-safe z-50 lg:hidden px-6 py-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="flex justify-around items-center">
+                <a href="{{ route('dashboard') }}" class="flex flex-col items-center p-2 rounded-xl transition {{ request()->routeIs('dashboard') ? 'text-brand' : 'text-gray-400 hover:text-gray-600' }}">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-[10px] font-bold tracking-wide">Курсы</span>
+                </a>
+                
+                <a href="{{ route('catalog.index') }}" class="flex flex-col items-center p-2 rounded-xl transition {{ request()->routeIs('catalog.*') ? 'text-brand' : 'text-gray-400 hover:text-gray-600' }}">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span class="text-[10px] font-bold tracking-wide">Каталог</span>
+                </a>
+
+                <a href="{{ route('profile.edit') }}" class="flex flex-col items-center p-2 rounded-xl transition {{ request()->routeIs('profile.*') ? 'text-brand' : 'text-gray-400 hover:text-gray-600' }}">
+                    <div class="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center overflow-hidden mb-1">
+                         <span class="text-[10px] font-bold">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
+                    </div>
+                    <span class="text-[10px] font-bold tracking-wide">Профиль</span>
+                </a>
+            </div>
+        </nav>
     </div>
 
     @stack('scripts')
