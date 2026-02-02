@@ -105,7 +105,7 @@
                                 <p class="text-xl font-bold text-gray-900">{{ $course->formatted_price }}</p>
                             </div>
                             
-                            <a href="{{ route('catalog.show', $course) }}" class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-gray-50 text-gray-800 border border-gray-100 group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-all duration-300 shadow-sm font-bold text-sm">
+                            <a href="{{ route('catalog.show', $course) }}" class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-brand text-white hover:opacity-90 transition-all duration-300 shadow-md font-bold text-sm">
                                 Подробнее
                             </a>
                         </div>
