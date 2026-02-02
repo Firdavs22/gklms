@@ -156,7 +156,7 @@
                                  {{ $completedInCourse }}/{{ $totalInCourse }} уроков
                             </span>
                             
-                            <div class="w-9 h-9 rounded-xl bg-gray-50 text-gray-400 group-hover:bg-brand group-hover:text-white transition-all duration-300 flex items-center justify-center transform group-hover:translate-x-1">
+                            <div class="w-9 h-9 rounded-xl bg-brand text-white shadow-md shadow-brand/20 transition-all duration-300 flex items-center justify-center transform group-hover:scale-110">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     @if($progress == 100)
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
