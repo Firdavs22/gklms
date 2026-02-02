@@ -28,16 +28,20 @@ class DashboardController extends Controller
 
         // Determine "Last Viewed" logic
         $lastProgress = $user->lessonProgress()
-            ->with(['lesson.module.course'])
+            ->with(['lesson.modules.course'])
             ->latest('updated_at')
             ->first();
 
-        $lastLessonUrl = $lastProgress 
-            ? route('lessons.show', [$lastProgress->lesson->module->course, $lastProgress->lesson]) 
+        // Safe fallback if lesson or module is missing
+        $lastLessonModule = $lastProgress?->lesson->modules->first();
+        $lastLessonCourse = $lastLessonModule?->course;
+
+        $lastLessonUrl = ($lastProgress && $lastLessonModule && $lastLessonCourse)
+            ? route('lessons.show', [$lastLessonCourse, $lastProgress->lesson]) 
             : '#';
 
-        $lastCourseUrl = $lastProgress
-            ? route('courses.show', $lastProgress->lesson->module->course)
+        $lastCourseUrl = $lastLessonCourse
+            ? route('courses.show', $lastLessonCourse)
             : ($enrollments->first() ? route('courses.show', $enrollments->first()->course) : route('catalog.index'));
 
         if ($totalLessons == 0 && $enrollments->isNotEmpty()) {
