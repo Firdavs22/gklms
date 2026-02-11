@@ -55,6 +55,7 @@ Route::get('/login/{token}', [MagicLinkController::class, 'login'])->name('magic
 // Phone auth via Telegram (accessible without auth)
 Route::post('/auth/phone', [MagicLinkController::class, 'requestPhoneAuth'])->name('auth.phone');
 Route::get('/auth/phone/status', [MagicLinkController::class, 'checkPhoneAuthStatus'])->name('auth.phone.status');
+Route::post('/auth/phone/verify-code', [MagicLinkController::class, 'verifyTelegramCode'])->name('auth.phone.verify-code');
 
 // Telegram callback (old widget)
 Route::get('/auth/telegram/callback', [TelegramController::class, 'callback'])->name('telegram.callback');
@@ -79,10 +80,10 @@ Route::post('/logout', [MagicLinkController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'allow.iframe'])->group(function () {
     // Dashboard - show enrolled courses
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // My Courses (enrolled)
     Route::get('/my-courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
-    
+
     // Lesson pages
     Route::get('/my-courses/{course:slug}/lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
 
@@ -101,7 +102,7 @@ Route::middleware(['auth', 'allow.iframe'])->group(function () {
     // Video streaming (Yandex Disk proxy)
     Route::get('/video/{lesson}/stream', [VideoStreamController::class, 'stream'])->name('video.stream');
     Route::get('/video/{lesson}/signed-url', [VideoStreamController::class, 'getSignedUrl'])->name('video.signed-url');
-    
+
     // Admin preview (without enrollment check)
     Route::get('/preview/lesson/{lesson}', [LessonController::class, 'preview'])
         ->name('lessons.preview');
